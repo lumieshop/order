@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>르미에 주문서 · 주소 검색</title>
+<title>르미에 주문서</title>
 <style>
   :root{
     --bg:#F6F1E8;        /* 웜 베이지 */
@@ -13,6 +13,7 @@
     --accent:#B99B6B;    /* 골드 베이지 */
     --accent-ink:#FFFFFF;
     --line:#E6DCCB;
+    --warn:#B4544A;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
@@ -26,12 +27,49 @@
     letter-spacing:.35em;font-size:15px;color:var(--sub);
     text-transform:lowercase;margin-bottom:6px;
   }
-  h1{font-size:21px;font-weight:700;margin-bottom:22px}
+  h1{font-size:20px;font-weight:700;margin-bottom:22px;text-align:center}
   .card{
     width:100%;max-width:440px;background:var(--card);
     border:1px solid var(--line);border-radius:16px;
     padding:22px 20px;box-shadow:0 6px 24px rgba(62,54,46,.06);
   }
+
+  /* ---- 1단계: 정책 동의 ---- */
+  .policy h2{
+    font-size:16px;color:var(--warn);text-align:center;margin-bottom:6px;
+  }
+  .policy .intro{
+    font-size:13px;color:var(--sub);text-align:center;margin-bottom:16px;line-height:1.5;
+  }
+  .rule{margin-bottom:14px}
+  .rule h3{font-size:14px;margin-bottom:4px}
+  .rule h3 span{color:var(--accent);margin-right:4px}
+  .rule p{font-size:13px;line-height:1.6;color:var(--ink)}
+  .rule p small{display:block;color:var(--warn);margin-top:2px}
+  .notice{
+    font-size:12.5px;line-height:1.6;color:var(--sub);
+    background:var(--bg);border-radius:10px;padding:12px 14px;margin:16px 0 18px;
+  }
+  .agree{
+    display:flex;gap:10px;align-items:flex-start;
+    border:1.5px solid var(--line);border-radius:12px;
+    padding:14px;cursor:pointer;user-select:none;margin-bottom:14px;
+    transition:border-color .15s, background .15s;
+  }
+  .agree.on{border-color:var(--accent);background:#FBF6EC}
+  .agree input{
+    flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--accent);cursor:pointer;
+  }
+  .agree span{font-size:14px;line-height:1.5;font-weight:600}
+  #goBtn{
+    width:100%;padding:15px 0;border:0;border-radius:12px;
+    background:#D8CBB4;color:#fff;font-size:15px;font-weight:700;
+    cursor:not-allowed;transition:background .15s;
+  }
+  #goBtn.ready{background:var(--accent);cursor:pointer}
+
+  /* ---- 2단계: 주소 검색 ---- */
+  #stepAddr{display:none}
   .step{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
   .step:last-of-type{margin-bottom:20px}
   .step b{
@@ -39,48 +77,93 @@
     background:var(--accent);color:var(--accent-ink);
     font-size:12px;display:flex;align-items:center;justify-content:center;
   }
-  .step p{font-size:14px;line-height:1.55;color:var(--ink)}
+  .step p{font-size:14px;line-height:1.55}
   .step p small{color:var(--sub)}
   #addrBox{
     width:100%;height:420px;border:1px solid var(--line);
     border-radius:12px;overflow:hidden;background:#fff;
   }
   .skip{
-    display:block;text-align:center;margin-top:18px;
+    display:none;text-align:center;margin-top:18px;
     font-size:13px;color:var(--sub);text-decoration:underline;
-  }
-  .loading{
-    text-align:center;font-size:14px;color:var(--sub);padding:40px 0;
   }
 </style>
 </head>
 <body>
 
 <div class="brand">l u m i e</div>
-<h1>주문서 작성 전, 주소를 먼저 검색해 주세요</h1>
+<h1 id="title">주문 전 꼭 확인해 주세요</h1>
 
-<div class="card">
-  <div class="step"><b>1</b><p>아래에서 <strong>도로명 주소</strong>를 검색해 선택해 주세요.</p></div>
-  <div class="step"><b>2</b><p>주소가 채워진 주문서가 열리면 <strong>동·호수 등 상세주소</strong>를 뒤에 이어 적어 주세요.<br><small>나머지 항목도 잊지 말고 작성해 주세요!</small></p></div>
-  <div id="addrBox"><div class="loading">주소 검색을 불러오는 중…</div></div>
+<!-- 1단계: 정책 동의 -->
+<div class="card policy" id="stepPolicy">
+  <h2>🚫 반품/교환 및 CS 안내 🚫</h2>
+  <p class="intro">도매 중개 거래 특성상 아래 규정이 적용되오니<br>신중한 구매 바랍니다.</p>
+
+  <div class="rule">
+    <h3><span>1</span>교환/반품 절대 불가</h3>
+    <p>변심, 사이즈, 미세불량 모두 해당됩니다.
+    <small>⚠️ 예민하신 분은 오프라인 구매를 권장합니다.</small></p>
+  </div>
+  <div class="rule">
+    <h3><span>2</span>취소 규정</h3>
+    <p>방송 중 <strong>'댓글'</strong>로만 가능하며, 종료 후 변경/취소는 불가합니다.</p>
+  </div>
+  <div class="rule">
+    <h3><span>3</span>상품의 중대한 불량은 채널로 문의해 주세요</h3>
+    <p>메시지를 계속 보내시면 순서가 뒤로 밀려 답변이 늦어집니다. 순차 답변드리니 기다려주세요.</p>
+  </div>
+
+  <div class="notice">🙏 방송 중에는 주문/입금 확인만 진행하며, 배송 등 일반 CS 업무는 불가한 점 양해 부탁드립니다.</div>
+
+  <label class="agree" id="agreeLabel">
+    <input type="checkbox" id="agreeChk">
+    <span>위 내용을 모두 확인했으며, 교환/반품 불가 규정에 동의합니다.</span>
+  </label>
+
+  <button id="goBtn" disabled>동의하고 주소 검색하기</button>
 </div>
 
-<a class="skip" href="https://docs.google.com/forms/d/e/1FAIpQLSdc1pDuIuSSiMUu-q0zHgdscP7VrdXiu3OT0qYfoxbg6mv2sg/viewform">주소 검색 없이 주문서로 바로 가기</a>
+<!-- 2단계: 주소 검색 -->
+<div class="card" id="stepAddr">
+  <div class="step"><b>1</b><p>아래에서 <strong>도로명 주소</strong>를 검색해 선택해 주세요.</p></div>
+  <div class="step"><b>2</b><p>주소가 채워진 주문서가 열리면 <strong>동·호수 등 상세주소</strong>를 뒤에 이어 적어 주세요.<br><small>나머지 항목도 잊지 말고 작성해 주세요!</small></p></div>
+  <div id="addrBox"></div>
+</div>
+
+<a class="skip" id="skipLink" href="https://docs.google.com/forms/d/e/1FAIpQLSdc1pDuIuSSiMUu-q0zHgdscP7VrdXiu3OT0qYfoxbg6mv2sg/viewform">주소 검색 없이 주문서로 바로 가기</a>
 
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
   var FORM  = "https://docs.google.com/forms/d/e/1FAIpQLSdc1pDuIuSSiMUu-q0zHgdscP7VrdXiu3OT0qYfoxbg6mv2sg/viewform";
   var ENTRY = "entry.1181392980"; // 주소 문항
 
-  new daum.Postcode({
-    oncomplete: function(data){
-      var addr = data.roadAddress || data.jibunAddress;
-      var extra = data.buildingName ? " (" + data.buildingName + ")" : "";
-      var full = "(" + data.zonecode + ") " + addr + extra + " ";
-      location.href = FORM + "?usp=pp_url&" + ENTRY + "=" + encodeURIComponent(full);
-    },
-    width:"100%", height:"100%"
-  }).embed(document.getElementById("addrBox"));
+  var chk   = document.getElementById("agreeChk");
+  var label = document.getElementById("agreeLabel");
+  var btn   = document.getElementById("goBtn");
+
+  chk.addEventListener("change", function(){
+    label.classList.toggle("on", chk.checked);
+    btn.classList.toggle("ready", chk.checked);
+    btn.disabled = !chk.checked;
+  });
+
+  btn.addEventListener("click", function(){
+    if(!chk.checked) return;
+    document.getElementById("stepPolicy").style.display = "none";
+    document.getElementById("stepAddr").style.display = "block";
+    document.getElementById("title").textContent = "주소를 검색해 주세요";
+    document.getElementById("skipLink").style.display = "block";
+    new daum.Postcode({
+      oncomplete: function(data){
+        var addr = data.roadAddress || data.jibunAddress;
+        var extra = data.buildingName ? " (" + data.buildingName + ")" : "";
+        var full = "(" + data.zonecode + ") " + addr + extra + " ";
+        location.href = FORM + "?usp=pp_url&" + ENTRY + "=" + encodeURIComponent(full);
+      },
+      width:"100%", height:"100%"
+    }).embed(document.getElementById("addrBox"));
+    window.scrollTo(0,0);
+  });
 </script>
 
 </body>
