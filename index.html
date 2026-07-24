@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>르미에 주문서 · 주소 검색</title>
+<style>
+  :root{
+    --bg:#F6F1E8;        /* 웜 베이지 */
+    --card:#FFFDF8;
+    --ink:#3E362E;       /* 딥 브라운 */
+    --sub:#8C7F6E;
+    --accent:#B99B6B;    /* 골드 베이지 */
+    --accent-ink:#FFFFFF;
+    --line:#E6DCCB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Apple SD Gothic Neo','Noto Sans KR',-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:28px 16px 40px;
+  }
+  .brand{
+    font-family:Georgia,'Times New Roman',serif;
+    letter-spacing:.35em;font-size:15px;color:var(--sub);
+    text-transform:lowercase;margin-bottom:6px;
+  }
+  h1{font-size:21px;font-weight:700;margin-bottom:22px}
+  .card{
+    width:100%;max-width:440px;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;
+    padding:22px 20px;box-shadow:0 6px 24px rgba(62,54,46,.06);
+  }
+  .step{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+  .step:last-of-type{margin-bottom:20px}
+  .step b{
+    flex:none;width:22px;height:22px;border-radius:50%;
+    background:var(--accent);color:var(--accent-ink);
+    font-size:12px;display:flex;align-items:center;justify-content:center;
+  }
+  .step p{font-size:14px;line-height:1.55;color:var(--ink)}
+  .step p small{color:var(--sub)}
+  #addrBox{
+    width:100%;height:420px;border:1px solid var(--line);
+    border-radius:12px;overflow:hidden;background:#fff;
+  }
+  .skip{
+    display:block;text-align:center;margin-top:18px;
+    font-size:13px;color:var(--sub);text-decoration:underline;
+  }
+  .loading{
+    text-align:center;font-size:14px;color:var(--sub);padding:40px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="brand">l u m i e</div>
+<h1>주문서 작성 전, 주소를 먼저 검색해 주세요</h1>
+
+<div class="card">
+  <div class="step"><b>1</b><p>아래에서 <strong>도로명 주소</strong>를 검색해 선택해 주세요.</p></div>
+  <div class="step"><b>2</b><p>주소가 채워진 주문서가 열리면 <strong>동·호수 등 상세주소</strong>를 뒤에 이어 적어 주세요.<br><small>나머지 항목도 잊지 말고 작성해 주세요!</small></p></div>
+  <div id="addrBox"><div class="loading">주소 검색을 불러오는 중…</div></div>
+</div>
+
+<a class="skip" href="https://docs.google.com/forms/d/e/1FAIpQLSdc1pDuIuSSiMUu-q0zHgdscP7VrdXiu3OT0qYfoxbg6mv2sg/viewform">주소 검색 없이 주문서로 바로 가기</a>
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+  var FORM  = "https://docs.google.com/forms/d/e/1FAIpQLSdc1pDuIuSSiMUu-q0zHgdscP7VrdXiu3OT0qYfoxbg6mv2sg/viewform";
+  var ENTRY = "entry.1181392980"; // 주소 문항
+
+  new daum.Postcode({
+    oncomplete: function(data){
+      var addr = data.roadAddress || data.jibunAddress;
+      var extra = data.buildingName ? " (" + data.buildingName + ")" : "";
+      var full = "(" + data.zonecode + ") " + addr + extra + " ";
+      location.href = FORM + "?usp=pp_url&" + ENTRY + "=" + encodeURIComponent(full);
+    },
+    width:"100%", height:"100%"
+  }).embed(document.getElementById("addrBox"));
+</script>
+
+</body>
+</html>
